@@ -1,0 +1,77 @@
+
+let spacing = 50;
+let margin = 50;
+let baseSize = 24;
+let largeSize = 42;
+
+// Animation controls
+let speed = 0.04;
+let waveSpacing = 0.025;
+
+function setup() {sin
+  createCanvas(600, 600);
+  rectMode(CENTER);
+}
+
+function draw() {
+  background(255);
+
+  // Keep random values consistent every frame
+  randomSeed(10);
+
+  // Go through each row
+  for (let y = margin; y < height - margin; y += spacing) {
+
+    // Go through each column
+    for (let x = margin; x < width - margin; x += spacing) {
+
+      let column = (x - margin) / spacing;
+      let row = (y - margin) / spacing;
+
+      // Choose which squares are black
+      if ((column + row) % 4 == 0) {
+
+        // Create a diagonal cosine wave
+        let wave = cos(frameCount * speed + (x + y) * waveSpacing);
+
+        // Convert the wave into a square size
+        let animatedSize = map(wave, -1, 1, 15, largeSize);
+
+        // Add a small consistent random variation
+        let variation = random(-2, 2);
+
+        push();
+        translate(x, y);
+
+        fill(0);
+        stroke(0);
+        strokeWeight(2);
+
+        rect(0, 0, animatedSize + variation, animatedSize + variation);
+
+        pop();
+
+      } else {
+
+        // Keep the smaller outlined squares still
+        push();
+        translate(x, y);
+
+        noFill();
+        stroke(0);
+        strokeWeight(2);
+
+        rect(0, 0, baseSize, baseSize);
+
+        pop();
+      }
+    }
+  }
+}
+
+// Press S to save a 3-second GIF
+function keyPressed() {
+  if (key === 's') {
+    saveGif('motion-v1-wave', 3);
+  }
+}
