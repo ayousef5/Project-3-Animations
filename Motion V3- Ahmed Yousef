@@ -1,0 +1,99 @@
+
+let spacing = 50;
+let margin = 50;
+let baseSize = 24;
+let largeSize = 42;
+
+// Animation controls
+let driftSpeed = 0.008;
+let driftAmount = 18;
+
+// Three chosen colors
+let navy = [20, 33, 61];
+let turquoise = [64, 224, 208];
+let coral = [255, 111, 97];
+
+function setup() {
+  createCanvas(600, 600);
+  rectMode(CENTER);
+
+  // Initial white background
+  background(255);
+}
+
+function draw() {
+
+  // Partially cover the previous frame to create trails
+  background(255, 20);
+
+  // Keep random color choices consistent
+  randomSeed(30);
+
+  // Go through each row
+  for (let y = margin; y < height - margin; y += spacing) {
+
+    // Go through each column
+    for (let x = margin; x < width - margin; x += spacing) {
+
+      let column = (x - margin) / spacing;
+      let row = (y - margin) / spacing;
+
+      // Smooth drifting using noise
+      let n1 = noise(x * 0.01, y * 0.01, frameCount * driftSpeed);
+      let n2 = noise(x * 0.01 + 100, y * 0.01 + 100, frameCount * driftSpeed);
+
+      let dx = map(n1, 0, 1, -driftAmount, driftAmount);
+      let dy = map(n2, 0, 1, -driftAmount, driftAmount);
+
+      // Choose one of the three colors
+      let colorChoice = random(3);
+
+      push();
+
+      // Move to the drifting position
+      translate(x + dx, y + dy);
+
+      // Slightly rotate each square
+      rotate(map(n1, 0, 1, -0.2, 0.2));
+
+      // Keep the original Project 2 pattern
+      if ((column + row) % 4 == 0) {
+
+        if (colorChoice < 1) {
+          fill(navy);
+        } else if (colorChoice < 2) {
+          fill(turquoise);
+        } else {
+          fill(coral);
+        }
+
+        noStroke();
+        rect(0, 0, largeSize, largeSize);
+
+      } else {
+
+        if (colorChoice < 1) {
+          stroke(navy);
+        } else if (colorChoice < 2) {
+          stroke(turquoise);
+        } else {
+          stroke(coral);
+        }
+
+        noFill();
+        strokeWeight(2);
+
+        rect(0, 0, baseSize, baseSize);
+      }
+
+      pop();
+    }
+  }
+}
+
+// Press S to save a 3-second GIF
+function keyPressed() {
+  if (key === 's') {
+    saveGif('motion-v3-drift', 3);
+  }
+}
