@@ -1,0 +1,70 @@
+
+let spacing = 50;
+let margin = 50;
+let baseSize = 24;
+let largeSize = 42;
+
+// Animation controls
+let speed = 0.04;
+let rotationRange = 0.05;
+
+function setup() {
+  createCanvas(600, 600);
+  rectMode(CENTER);
+}
+
+function draw() {
+  background(255);
+
+  // Keep random speeds consistent every frame
+  randomSeed(20);
+
+  // Go through each row
+  for (let y = margin; y < height - margin; y += spacing) {
+
+    // Go through each column
+    for (let x = margin; x < width - margin; x += spacing) {
+
+      let column = (x - margin) / spacing;
+      let row = (y - margin) / spacing;
+
+      // Give each square its own rotation speed
+      let spin = random(-rotationRange, rotationRange);
+
+      push();
+
+      // Move to the center of the square
+      translate(x, y);
+
+      // Rotate each square independently
+      rotate(frameCount * spin * (speed / 0.04));
+
+      // Keep the original Project 2 pattern
+      if ((column + row) % 4 == 0) {
+
+        fill(0);
+        stroke(0);
+        strokeWeight(2);
+
+        rect(0, 0, largeSize, largeSize);
+
+      } else {
+
+        noFill();
+        stroke(0);
+        strokeWeight(2);
+
+        rect(0, 0, baseSize, baseSize);
+      }
+
+      pop();
+    }
+  }
+}
+
+// Press S to save a 3-second GIF
+function keyPressed() {
+  if (key === 's') {
+    saveGif('motion-v2-turn', 3);
+  }
+}
